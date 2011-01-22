@@ -16,10 +16,19 @@ function gmapfield_field_schema($field) {
     if ($field['type'] == 'gmapfield_location') {
         $schema = array();
         $schema['columns']['lat'] = array(
-            'type' => 'float',
+            'type' => 'numeric',
+            'precision' => 9,
+            'scale' => 6,
         );
-        $schema['columns']['long'] = array(
-            'type' => 'float',
+        $schema['columns']['lng'] = array(
+            'type' => 'numeric',
+            'precision' => 9,
+            'scale' => 6,
+        );
+        $schema['columns']['zoom'] = array(
+            'type' => 'int',
+            'size' => 'tiny',
+            'default' => 10,
         );
 
         return $schema;
@@ -28,7 +37,7 @@ function gmapfield_field_schema($field) {
 
 function gmapfield_field_is_empty($item, $field) {
     if ($field['type'] == 'gmapfield_location') {
-        if (empty($item['lat']) || empty($item['long'])) {
+        if (empty($item['lat']) || empty($item['lng'])) {
             return true;
         }
     }
@@ -59,21 +68,34 @@ function gmapfield_field_widget_form(&$form, &$form_state,
                                      $langcode, $items, 
                                      $delta, $element) {
     if ($instance['widget']['type'] == 'gmapfield_map') {
+        $lat = isset($items[$delta]) ? $items[$delta]['lat'] : 31.231592;
+        $lng = isset($items[$delta]) ? $items[$delta]['lng'] : 121.47171;
+        $zoom = isset($items[$delta]) ? $items[$delta]['zoom'] : 10;
         $element['lat'] = array(
             '#type' => 'hidden',
+            '#default_value' => $lat,
             '#attributes' => array(
                 'id' => "gmapfield-{$delta}-lat"
             ),
         );
-        $element['long'] = array(
+        $element['lng'] = array(
             '#type' => 'hidden',
+            '#default_value' => $lng,
             '#attributes' => array(
-                'id' => "gmapfield-{$delta}-long"
+                'id' => "gmapfield-{$delta}-lng"
+            ),
+        );
+        $element['zoom'] = array(
+            '#type' => 'hidden',
+            '#default_value' => $zoom,
+            '#attributes' => array(
+                'id' => "gmapfield-{$delta}-zoom"
             ),
         );
         $element['map_canvas'] = array(
             '#markup' => "<div id='gmapfield-$delta-canvas' "
-                            . "class='gmapfield-map-canvas'></div>",
+                . 'class="gmapfield-map-canvas" '
+                . 'style="width:400px;height:400px"></div>',
         );
         $element['#attached']['css'] = array(
             drupal_get_path('module', 'gmapfield') . '/gmapfield.css',
