@@ -60,12 +60,34 @@ function gmapfield_field_widget_form(&$form, &$form_state,
                                      $delta, $element) {
     if ($instance['widget']['type'] == 'gmapfield_map') {
         $element['lat'] = array(
-            '#title' => t('Latitudes'),
-            '#type' => 'textfield',
+            '#type' => 'hidden',
+            '#attributes' => array(
+                'id' => "gmapfield-{$delta}-lat"
+            ),
         );
         $element['long'] = array(
-            '#title' => t('Longitudes'),
-            '#type' => 'textfield',
+            '#type' => 'hidden',
+            '#attributes' => array(
+                'id' => "gmapfield-{$delta}-long"
+            ),
+        );
+        $element['map_canvas'] = array(
+            '#markup' => "<div id='gmapfield-$delta-canvas' "
+                            . "class='gmapfield-map-canvas'></div>",
+        );
+        $element['#attached']['css'] = array(
+            drupal_get_path('module', 'gmapfield') . '/gmapfield.css',
+        );
+        $element['#attached']['drupal_add_js'] = array(
+            array(array(
+                'gmapfields'=>array($delta),
+            ), 'setting'),
+        );
+        $element['#attached']['js'] = array(
+            'http://maps.google.com/maps/api/js?sensor=false' => array(
+                'type' => 'external',
+            ),
+            drupal_get_path('module', 'gmapfield') . '/gmapfield.js',
         );
     }
 
