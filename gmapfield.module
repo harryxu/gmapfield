@@ -1,0 +1,102 @@
+<?php
+
+function gmapfield_field_info() {
+    return array(
+        'gmapfield_location' => array(
+            'label' => t('Google map'),
+            'description' => t(
+                'This field stores a location for google map'),
+            'default_widget' => 'gmapfield_map',
+            'default_formatter' => 'gmapfield_default',
+        ),
+    );
+}
+
+function gmapfield_field_schema($field) {
+    if ($field['type'] == 'gmapfield_location') {
+        $schema = array();
+        $schema['columns']['lat'] = array(
+            'type' => 'float',
+        );
+        $schema['columns']['long'] = array(
+            'type' => 'float',
+        );
+
+        return $schema;
+    }
+}
+
+function gmapfield_field_is_empty($item, $field) {
+    if ($field['type'] == 'gmapfield_location') {
+        if (empty($item['lat']) || empty($item['long'])) {
+            return true;
+        }
+    }
+    return false;
+}
+
+//
+//  widget
+//
+
+function gmapfield_field_widget_info() {
+    $widgets = array();
+    $widgets['gmapfield_map'] = array(
+        'label' => t('Google map'),
+        'description' => t(
+            'Allow the user choose location from Google map.'),
+        'field types' => array('gmapfield_location'),
+        'behaviors' => array(
+            'multiple values' => FIELD_BEHAVIOR_DEFAULT,
+            'default value' => FIELD_BEHAVIOR_DEFAULT,
+        ),
+    );
+    return $widgets;
+}
+
+function gmapfield_field_widget_form(&$form, &$form_state, 
+                                     $field, $instance, 
+                                     $langcode, $items, 
+                                     $delta, $element) {
+    if ($instance['widget']['type'] == 'gmapfield_map') {
+        $element['lat'] = array(
+            '#title' => t('Latitudes'),
+            '#type' => 'textfield',
+        );
+        $element['long'] = array(
+            '#title' => t('Longitudes'),
+            '#type' => 'textfield',
+        );
+    }
+
+    return $element;
+}
+
+//
+//  formatter
+//
+
+function gmapfield_field_formatter_info() {
+    return array(
+        'gmapfield_default' => array(
+            'label' => t('Default'),
+            'field types' => array('gmapfield_location'),
+        ),
+    );
+}
+
+function gmapfield_field_formatter_view($entity_type, $entity, 
+                                        $field, $instance, 
+                                        $langcode, $items, $display) {
+    switch ($display['type']) {
+    case 'gmapfield_default':
+        foreach ($items as $delta => $item) {
+            $element[$delta] = array(
+                '#markup' => $item['value'],
+            );
+        }
+        break;
+    }
+
+    return $element;
+}

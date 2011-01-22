@@ -1,0 +1,6 @@
+name = Google map field
+description = A Field offering google map
+core = 7.x
+dependencies[] = field
+files[] = gmapfield.module
+
