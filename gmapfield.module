@@ -68,7 +68,6 @@ function gmapfield_field_widget_form(&$form, &$form_state,
                                      $langcode, $items, 
                                      $delta, $element) {
     if ($instance['widget']['type'] == 'gmapfield_map') {
-        dpm($items);
         $lat = isset($items[$delta]) ? $items[$delta]['lat'] : 31.231592;
         $lng = isset($items[$delta]) ? $items[$delta]['lng'] : 121.47171;
         $zoom = isset($items[$delta]) ? $items[$delta]['zoom'] : 10;
@@ -143,9 +142,19 @@ function gmapfield_field_formatter_view($entity_type, $entity,
     switch ($display['type']) {
     case 'gmapfield_default':
         foreach ($items as $delta => $item) {
+            $eid = 'gmapfield-' . $entity->nid . '-' . $delta;
             $element[$delta] = array(
-                '#markup' => $item['value'],
+                '#markup' => '<div id="' . $eid . '"></div>',
             );
+            $element['#attached']['js'] = array(
+                'http://maps.google.com/maps/api/js?sensor=false' => array(
+                    'type' => 'external',
+                ),
+                drupal_get_path('module', 'gmapfield') . '/gmapfield.js',
+            );
+            drupal_add_js(array(
+                'gmapfieldViews' => array($eid => $item),
+            ), 'setting');
         }
         break;
     }
