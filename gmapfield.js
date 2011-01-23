@@ -23,6 +23,7 @@ Drupal.GMapField = function(delta) {
 };
 
 Drupal.GMapField.prototype.initMap = function() {
+    var self = this;
     var latInput = this.fieldset.find('.gmapfield-lat');
     var lngInput = this.fieldset.find('.gmapfield-lng');
     var zoomInput = this.fieldset.find('.gmapfield-zoom');
@@ -48,7 +49,7 @@ Drupal.GMapField.prototype.initMap = function() {
         marker.setPosition(latlng);
         latInput.val(latlng.lat());
         lngInput.val(latlng.lng());
-        zoomInput.val(this.map.getZoom());
+        zoomInput.val(self.map.getZoom());
     };
 
     google.maps.event.addListener(this.map, 'click', handler);
@@ -68,7 +69,7 @@ Drupal.GMapField.prototype.initMapSearch = function() {
 
     this.localSearch = new google.search.LocalSearch();
     this.localSearch.setCenterPoint(this.map.getCenter());
-    this.localSearch.setSearchCompleteCallback(this, Drupal.GMapField.searchCompleteHandler);
+    this.localSearch.setSearchCompleteCallback(this, this.searchCompleteHandler);
 
     searchButton.click(function() {
         self.localSearch.execute(searchInput.val());
@@ -82,7 +83,7 @@ Drupal.GMapField.prototype.initMapSearch = function() {
     });
 };
 
-Drupal.GMapField.searchCompleteHandler = function() {
+Drupal.GMapField.prototype.searchCompleteHandler = function() {
     if (this.localSearch.results.length == 0) {
         alert('没有找到您要的地点');
         return;
