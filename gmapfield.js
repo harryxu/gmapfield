@@ -83,6 +83,10 @@ Drupal.GMapField.prototype.initMapSearch = function() {
 };
 
 Drupal.GMapField.searchCompleteHandler = function() {
+    if (this.localSearch.results.length == 0) {
+        alert('没有找到您要的地点');
+        return;
+    }
     var first = this.localSearch.results[0];
     this.map.setCenter(new google.maps.LatLng(first.lat, first.lng));
 };
