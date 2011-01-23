@@ -68,37 +68,45 @@ function gmapfield_field_widget_form(&$form, &$form_state,
                                      $langcode, $items, 
                                      $delta, $element) {
     if ($instance['widget']['type'] == 'gmapfield_map') {
+        dpm($items);
         $lat = isset($items[$delta]) ? $items[$delta]['lat'] : 31.231592;
         $lng = isset($items[$delta]) ? $items[$delta]['lng'] : 121.47171;
         $zoom = isset($items[$delta]) ? $items[$delta]['zoom'] : 10;
-        $element['lat'] = array(
+        $element['mapfield'] = array(
+            '#type' => 'fieldset', 
+            '#title' => t('Map settings'), 
+            '#collapsible' => true, 
+            '#collapsed' => true,
+            '#attributes' => array(
+                'id' => "gmapfield-edit-$delta"
+            ),
+        );
+        $element['mapfield']['lat'] = array(
             '#type' => 'hidden',
             '#default_value' => $lat,
+            '#parents' => array($element['#field_name'], 'und', $delta, 'lat'),
             '#attributes' => array(
-                'id' => "gmapfield-{$delta}-lat"
+                'class' => "gmapfield-lat"
             ),
         );
-        $element['lng'] = array(
+        $element['mapfield']['lng'] = array(
             '#type' => 'hidden',
             '#default_value' => $lng,
+            '#parents' => array($element['#field_name'], 'und', $delta, 'lng'),
             '#attributes' => array(
-                'id' => "gmapfield-{$delta}-lng"
+                'class' => "gmapfield-lng"
             ),
         );
-        $element['zoom'] = array(
+        $element['mapfield']['zoom'] = array(
             '#type' => 'hidden',
             '#default_value' => $zoom,
+            '#parents' => array($element['#field_name'], 'und', $delta, 'zoom'),
             '#attributes' => array(
-                'id' => "gmapfield-{$delta}-zoom"
+                'class' => "gmapfield-zoom"
             ),
         );
-        $element['map_canvas'] = array(
-            '#markup' => "<div id='gmapfield-$delta-canvas' "
-                . 'class="gmapfield-map-canvas" '
-                . 'style="width:400px;height:400px"></div>',
-        );
-        $element['#attached']['css'] = array(
-            drupal_get_path('module', 'gmapfield') . '/gmapfield.css',
+        $element['mapfield']['map_canvas'] = array(
+            '#markup' => '<div class="gmapfield-map-canvas"></div>',
         );
         $element['#attached']['drupal_add_js'] = array(
             array(array(
