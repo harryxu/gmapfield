@@ -83,7 +83,7 @@ function gmapfield_field_widget_form(&$form, &$form_state,
         $element['mapfield']['lat'] = array(
             '#type' => 'hidden',
             '#default_value' => $lat,
-            '#parents' => array($element['#field_name'], 'und', $delta, 'lat'),
+            '#parents' => array($element['#field_name'], $langcode, $delta, 'lat'),
             '#attributes' => array(
                 'class' => "gmapfield-lat"
             ),
@@ -91,7 +91,7 @@ function gmapfield_field_widget_form(&$form, &$form_state,
         $element['mapfield']['lng'] = array(
             '#type' => 'hidden',
             '#default_value' => $lng,
-            '#parents' => array($element['#field_name'], 'und', $delta, 'lng'),
+            '#parents' => array($element['#field_name'], $langcode, $delta, 'lng'),
             '#attributes' => array(
                 'class' => "gmapfield-lng"
             ),
@@ -99,7 +99,7 @@ function gmapfield_field_widget_form(&$form, &$form_state,
         $element['mapfield']['zoom'] = array(
             '#type' => 'hidden',
             '#default_value' => $zoom,
-            '#parents' => array($element['#field_name'], 'und', $delta, 'zoom'),
+            '#parents' => array($element['#field_name'], $langcode, $delta, 'zoom'),
             '#attributes' => array(
                 'class' => "gmapfield-zoom"
             ),
